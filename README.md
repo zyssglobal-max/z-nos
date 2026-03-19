@@ -11,7 +11,7 @@ Cliente Nostr de código abierto para el [protocolo Nostr](https://github.com/no
 - **Múltiples Relays** - Conecta a varios relays simultáneamente
 - **Búsqueda Global** - Busca mensajes y usuarios en toda la aplicación
 - **Interfaz Moderna** - Diseño responsive con tema oscuro y animaciones
-- **Persistencia Local** - Todos los datos se guardan localmente en tu navegador
+- **Persistencia Local** - Todos los datos se guardan localmente en tu sistema
 - **Modo Pánico** - Borra todos tus datos locales con un solo clic
 
 ## 🚀 Capturas de Pantalla
