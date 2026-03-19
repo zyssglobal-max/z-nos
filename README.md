@@ -21,7 +21,7 @@ Cliente Nostr de código abierto para el [protocolo Nostr](https://github.com/no
 ## 📦 Instalación
 
 ### Opción 1: Uso Directo (EXE)
-1. Descarga los ficheros de la version `Z-NOS`
+1. Descarga los ficheros de la version mas actual D' `Z-NOS`
 2. Password del .rar 8905
 2. Ábrelo en tu sistema windows (portable) ...
 3. ¡Listo para usar!
