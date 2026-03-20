@@ -25,7 +25,7 @@
 
 ## Capturas de Pantalla
 
-*(---)*
+<img src="z-nos.png" alt="Descripción" width="500"/>
 
 ## Instalación
 
