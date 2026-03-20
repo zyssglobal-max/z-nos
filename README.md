@@ -11,6 +11,8 @@
   
 </div>
 
+---
+
 ## Características
 
 - **Mensajes Privados (NIP-04)** - Comunicación cifrada extremo a extremo
