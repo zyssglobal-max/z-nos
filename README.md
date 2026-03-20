@@ -1,10 +1,17 @@
-# Z-NOS - a nostr client
+<div align="center">
+  <img src="/zySs/fav.png" alt="Z-NOS logo" width="100" height="100" /><br>
+  
+  <h1>Z-NOS-Nostr-client</h1>
+  <p><strong>Cliente Nostr de código abierto para el [protocolo Nostr](https://github.com/nostr-protocol/nostr). Z-NOS es un cliente web enfocado en la privacidad y la comunicación directa a través de mensajes privados cifrados.</strong></p>
+  
+  <p>
+    Libre & de código abierto.<br/>
+    Creado por <a href="#">ZYSS .CORP</a>, con un estilo moderno, diseño responsive con tema oscuro y animaciones.
+  </p>
+  
+</div>
 
-![Z-NOS logo](https://avatars.githubusercontent.com/u/269569607?v=4)
-
-Cliente Nostr de código abierto para el [protocolo Nostr](https://github.com/nostr-protocol/nostr). Z-NOS es un cliente web enfocado en la privacidad y la comunicación directa a través de mensajes privados cifrados.
-
-## ✨ Características
+## Características
 
 - **Mensajes Privados (NIP-04)** - Comunicación cifrada extremo a extremo
 - **Gestión de Amigos** - Añade y organiza tus contactos Nostr
@@ -14,14 +21,14 @@ Cliente Nostr de código abierto para el [protocolo Nostr](https://github.com/no
 - **Persistencia Local** - Todos los datos se guardan localmente en tu sistema
 - **Modo Pánico** - Borra todos tus datos locales con un solo clic
 
-## 🚀 Capturas de Pantalla
+## Capturas de Pantalla
 
 *(---)*
 
-## 📦 Instalación
+## Instalación
 
 ### Opción 1: Uso Directo (EXE)
-1. Descarga los ficheros de la version mas actual D' `Z-NOS`
+1. Descarga los ficheros de la versión mas actual D' `Z-NOS`
 2. Password del .rar 8905
 2. Ábrelo en tu sistema windows (portable) ...
 3. ¡Listo para usar!
