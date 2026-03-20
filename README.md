@@ -23,9 +23,9 @@
 - **Persistencia Local** - Todos los datos se guardan localmente en tu sistema
 - **Modo Pánico** - Borra todos tus datos locales con un solo clic
 
-## Capturas de Pantalla
+## Vista previa
 
-<img src="z-nos.png" alt="Descripción" width="500"/>
+<img src="z-nos.png" alt="z-nos" width="100%"/>
 
 ## Instalación
 
