@@ -6,7 +6,7 @@
   
   <p>
     Libre & de código abierto.<br/>
-    Creado por <a href="https://zyssglobal-max.github.io/">ZYSS .CORP</a>, con un estilo moderno, diseño responsive con tema oscuro y animaciones.
+    Creado por <a href="https://github.com/zyssglobal-max/">ZYSS .CORP</a>, con un estilo moderno, diseño responsive con tema oscuro y animaciones.
   </p>
   
 </div>
