@@ -13,7 +13,7 @@
 
 ---
 
-## Características
+## ✨ Características
 
 - **Mensajes Privados (NIP-04)** - Comunicación cifrada extremo a extremo
 - **Gestión de Amigos** - Añade y organiza tus contactos Nostr
@@ -23,11 +23,11 @@
 - **Persistencia Local** - Todos los datos se guardan localmente en tu sistema
 - **Modo Pánico** - Borra todos tus datos locales con un solo clic
 
-## Vista previa
+## 🧮 Vista previa
 
 <img src="z-nos.png" alt="z-nos" width="100%"/>
 
-## Instalación
+## 📦 Instalación
 
 ### Opción 1: Uso Directo (EXE)
 1. Descarga los ficheros de la versión mas actual D' `Z-NOS`
