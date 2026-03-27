@@ -35,8 +35,7 @@ nos/
 ├── 📁 global.html
 ├── 📁 help.html
 ├── 📁 index.html
-├── 📁 repo.html
-└── 📁 trck.html
+└── 📁 repo.html
 ```
 
 ## 📦 Instalación
