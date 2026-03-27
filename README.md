@@ -27,6 +27,18 @@
 
 <img src="z-nos.png" alt="z-nos" width="100%"/>
 
+## 📁 Estructura
+
+```text
+nos/
+├── 📁 feed.html
+├── 📁 global.html
+├── 📁 help.html
+├── 📁 index.html
+├── 📁 repo.html
+└── 📁 trck.html
+```
+
 ## 📦 Instalación
 
 ### Opción 1: Uso Directo (EXE)
