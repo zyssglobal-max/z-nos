@@ -29,14 +29,14 @@
 
 ## 📁 Estructura
 
-```text
+
 nos/
 ├── 📁 feed
 ├── 📁 global
 ├── 📁 help
 ├── 📁 index
 └── 📁 repo
-```
+
 
 ## 📦 Instalación
 
