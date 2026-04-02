@@ -37,6 +37,7 @@ nos/
 ├── 🌐 index     // chat privado nuestra principal herramienta
 ├── 🌐 repo      // repositorios con las versiones z-nos desde github.com
 └── 🌐 nos       // Red Nostr Promocional (repos) ...
+<img src="z-nos.png" alt="z-nos" width="50%"/>
 ```
 
 ## 📦 Instalación
