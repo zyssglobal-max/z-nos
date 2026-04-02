@@ -48,5 +48,5 @@ nos/
 2. Password del .rar 8905
 2. Ábrelo en tu sistema windows (portable) ...
 3. ¡Listo para usar!
-4. [Probar Z-NOS](#) V.HTML - (Proximamente)
+4. [Probar Z-NOS](chat.html) V.HTML - (Proximamente)
 5. [Nostr Track](nos.html) V.HTML
