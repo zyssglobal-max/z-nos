@@ -39,7 +39,7 @@ nos/
 └── 🌐 nos       // Red Nostr Promocional (repos) ...
 ```
 ### `Nos promo`
-<img src="promo.png" alt="z-nos" width="50%"/>
+<img src="promo.png" alt="z-nos" width="100%"/>
 
 ## 📦 Instalación
 
