@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Nostr Clients · nos.json viewer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(102, 192, 244, 0.3);
+            padding: 10px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo i {
+            font-size: 32px;
+            color: #66c0f4;
+        }
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #66c0f4, #4a9fd4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo span {
+            font-size: 0.8rem;
+            color: #888;
+            margin-left: 8px;
+        }
+        .stats-bar {
+            max-width: 1200px;
+            margin: 24px auto 0;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .stats-count {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(102, 192, 244, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        .stats-count i {
+            color: #66c0f4;
+        }
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-input {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            width: 200px;
+            font-size: 0.9rem;
+        }
+        .filter-input:focus {
+            outline: none;
+            border-color: #66c0f4;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .filter-btn, .reset-btn {
+            padding: 8px 16px;
+            background: #66c0f4;
+            border: none;
+            border-radius: 8px;
+            color: #0a0a0a;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-btn:hover, .reset-btn:hover {
+            background: #4a9fd4;
+            transform: translateY(-1px);
+        }
+        .reset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+        }
+        .reset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .sites-grid {
+            max-width: 1200px;
+            margin: 32px auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+        .site-card {
+            background: rgba(20, 20, 30, 0.8);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .site-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(102, 192, 244, 0.5);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+        }
+        .site-preview {
+            height: 140px;
+            background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .preview-placeholder {
+            text-align: center;
+            color: #888;
+        }
+        .preview-placeholder i {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+        .preview-placeholder span {
+            font-size: 0.8rem;
+            display: block;
+        }
+        .nips-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(102, 192, 244, 0.9);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #0a0a0a;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .info {
+            padding: 16px;
+        }
+        .site-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .site-name h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            word-break: break-all;
+        }
+        .site-stats {
+            display: flex;
+            gap: 12px;
+            font-size: 0.75rem;
+            color: #888;
+        }
+        .site-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .nips-list {
+            margin: 12px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .nip-chip {
+            background: rgba(102, 192, 244, 0.15);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #66c0f4;
+            font-family: monospace;
+            transition: all 0.2s;
+        }
+        .nip-chip.highlight {
+            background: #f59e0b;
+            color: #0a0a0a;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+        .site-description {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin: 12px 0;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .site-author {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .site-author i {
+            color: #66c0f4;
+        }
+        .category-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(245, 158, 11, 0.15);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: #f59e0b;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 80px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .empty-state i {
+            font-size: 64px;
+            color: #66c0f4;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        .empty-state h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            color: #888;
+            margin-bottom: 20px;
+        }
+        .loading-spinner, .error-box {
+            text-align: center;
+            padding: 60px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .error-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 16px;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .footer {
+            text-align: center;
+            padding: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: #666;
+            font-size: 0.8rem;
+        }
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .filter-controls {
+                width: 100%;
+                justify-content: center;
+            }
+            .sites-grid {
+                grid-template-columns: 1fr;
+                padding: 0 16px;
+            }
+            .stats-bar {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .site-card {
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(102, 192, 244, 0.3);
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(102, 192, 244, 0.5);
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="header-content">
+        <div class="logo">
+            <i class="fas fa-bolt"></i>
+            <h1>Nostr Clients</h1>
+            <span>nos.json</span>
+        </div>
+        <div class="filter-controls">
+            <input type="text" id="nipFilter" class="filter-input" placeholder="NIPs, ej: 4, 8, 56">
+            <button id="resetFilterBtn" class="reset-btn"><i class="fas fa-times"></i> Reiniciar</button>
+        </div>
+    </div>
+</div>
+<div class="stats-bar">
+    <div class="stats-count">
+        <i class="fas fa-layer-group"></i>
+        <span id="clientCount">Cargando...</span>
+    </div>
+    <div class="stats-count" id="filterStats" style="display: none;">
+        <i class="fas fa-filter"></i>
+        <span id="filterBadge">Filtro activo</span>
+    </div>
+</div>
+<div id="clientsContainer" class="sites-grid">
+    <div class="empty-state">
+        <i class="fas fa-spinner fa-pulse"></i>
+        <h2>Cargando nos.json...</h2>
+        <p>Leyendo archivo desde el servidor</p>
+    </div>
+</div>
+<div class="footer">
+    <p>⚡ Basado en <strong>nos.json</strong> · NIPs resaltados en <span style="color:#f59e0b;">naranja</span> coinciden con el filtro</p>
+    <p style="margin-top: 8px;">Clientes que implementan Nostr Implementation Possibilities</p>
+</div>
+<script>
+    let clientsData = [];
+    let currentFilterSet = null;
+    const container = document.getElementById('clientsContainer');
+    const clientCountSpan = document.getElementById('clientCount');
+    const filterStatsDiv = document.getElementById('filterStats');
+    const filterBadgeSpan = document.getElementById('filterBadge');
+    const nipInput = document.getElementById('nipFilter');
+    const resetBtn = document.getElementById('resetFilterBtn');
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    function buildRepoUrl(ghPath) {
+        if (!ghPath || typeof ghPath !== 'string') return '#';
+        const clean = ghPath.trim();
+        if (!clean.includes('/')) return '#';
+        return `https://github.com/${clean}`;
+    }
+    function formatRepoName(ghPath) {
+        if (!ghPath) return 'unknown/repo';
+        return ghPath;
+    }
+    function getShortName(ghPath) {
+        if (!ghPath) return 'Repositorio';
+        const parts = ghPath.split('/');
+        return parts[parts.length - 1];
+    }
+    function renderCards() {
+        if (!clientsData.length) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <h2>No hay clientes cargados</h2>
+                    <p>El archivo nos.json está vacío o no contiene datos válidos</p>
+                </div>
+            `;
+            clientCountSpan.innerText = '0 clientes';
+            return;
+        }
+        let filtered = [...clientsData];
+        const isFilterActive = currentFilterSet && currentFilterSet.size > 0;
+        if (isFilterActive) {
+            filtered = clientsData.filter(client => {
+                if (!client.nips || !Array.isArray(client.nips)) return false;
+                return client.nips.some(nip => currentFilterSet.has(nip));
+            });
+        }
+        const total = clientsData.length;
+        const showing = filtered.length;
+        clientCountSpan.innerText = `${total} cliente${total !== 1 ? 's' : ''}`;
+        if (isFilterActive) {
+            const filterList = Array.from(currentFilterSet).sort((a,b)=>a-b).join(', ');
+            filterBadgeSpan.innerText = `NIP en {${filterList}} · ${showing} resultados`;
+            filterStatsDiv.style.display = 'flex';
+        } else {
+            filterStatsDiv.style.display = 'none';
+        }
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h2>No hay coincidencias</h2>
+                    <p>Ningún cliente soporta los NIP(s) seleccionados</p>
+                    <button class="reset-btn" onclick="document.getElementById('resetFilterBtn').click()" style="margin-top: 16px;">
+                        <i class="fas fa-times"></i> Limpiar filtro
+                    </button>
+                </div>
+            `;
+            return;
+        }
+        let cardsHtml = '';
+        for (const client of filtered) {
+            const ghPath = client.gh || '';
+            const repoUrl = buildRepoUrl(ghPath);
+            const fullName = formatRepoName(ghPath);
+            const shortName = getShortName(ghPath);
+            const category = client.category || 'clients';
+            const nipsArray = client.nips || [];
+            const sortedNips = [...nipsArray].sort((a,b) => a - b);
+            const nipCount = sortedNips.length;
+            let nipsHtml = '';
+            if (sortedNips.length === 0) {
+                nipsHtml = '<div style="font-size:0.7rem; color:#666;">Sin NIPs especificados</div>';
+            } else {
+                const chips = sortedNips.map(nip => {
+                    const isHighlighted = isFilterActive ? currentFilterSet.has(nip) : false;
+                    const highlightClass = isHighlighted ? 'highlight' : '';
+                    return `<span class="nip-chip ${highlightClass}">NIP-${nip}</span>`;
+                }).join('');
+                nipsHtml = `<div class="nips-list">${chips}</div>`;
+            }
+            const description = `Cliente Nostr con ${nipCount} NIP${nipCount !== 1 ? 's' : ''} implementados`;
+            cardsHtml += `
+                <a href="${repoUrl}" target="_blank" rel="noopener noreferrer" class="site-card">
+                    <div class="site-preview">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-code-branch"></i>
+                            <span>${escapeHtml(shortName)}</span>
+                        </div>
+                        <div class="nips-badge">
+                            <i class="fas fa-microchip"></i>
+                            ${nipCount} NIP${nipCount !== 1 ? 's' : ''}
+                        </div>
+                    </div>
+                    <div class="info">
+                        <div class="site-name">
+                            <h3>${escapeHtml(shortName)}</h3>
+                            <div class="site-stats">
+                                <span><i class="fab fa-github"></i> GitHub</span>
+                            </div>
+                        </div>
+                        ${nipsHtml}
+                        <div class="site-description">
+                            ${escapeHtml(description)}
+                        </div>
+                        <div class="site-author">
+                            <i class="fas fa-tag"></i>
+                            <span>${escapeHtml(category)}</span>
+                            <span style="margin-left: auto; font-size: 0.7rem;">
+                                <i class="fas fa-code"></i> ${escapeHtml(fullName)}
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            `;
+        }
+        container.innerHTML = cardsHtml;
+    }
+    function updateFilter() {
+        const rawValue = nipInput.value.trim();
+        if (rawValue === "") {
+            currentFilterSet = null;
+            renderCards();
+            return;
+        }
+        const parts = rawValue.split(',').map(p => p.trim()).filter(p => p !== "");
+        const nipNumbers = [];
+        for (const part of parts) {
+            const num = parseInt(part, 10);
+            if (!isNaN(num) && isFinite(num)) {
+                nipNumbers.push(num);
+            }
+        }
+        if (nipNumbers.length === 0) {
+            currentFilterSet = null;
+            renderCards();
+            return;
+        }
+        currentFilterSet = new Set(nipNumbers);
+        renderCards();
+    }
+    function resetFilter() {
+        nipInput.value = '';
+        currentFilterSet = null;
+        renderCards();
+        nipInput.focus();
+    }
+    function loadNosJson() {
+        container.innerHTML = `
+            <div class="empty-state">
+                <i class="fas fa-spinner fa-pulse"></i>
+                <h2>Cargando nos.json...</h2>
+                <p>Leyendo archivo desde el servidor</p>
+            </div>
+        `;
+        clientCountSpan.innerText = 'Cargando...';
+        fetch('./nos.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!Array.isArray(data)) {
+                    throw new Error('El archivo nos.json no contiene un array válido');
+                }
+                clientsData = data;
+                if (clientsData.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <h2>Archivo vacío</h2>
+                            <p>nos.json contiene un array sin elementos</p>
+                        </div>
+                    `;
+                    clientCountSpan.innerText = '0 clientes';
+                } else {
+                    renderCards();
+                }
+            })
+            .catch(error => {
+                console.error('Error cargando nos.json:', error);
+                let errorMsg = `No se pudo cargar nos.json: ${error.message}`;
+                if (error.message.includes('404')) {
+                    errorMsg = `Archivo "nos.json" no encontrado. Asegúrate de que existe en la misma carpeta que este HTML.`;
+                }
+                container.innerHTML = `
+                    <div class="error-box">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px; color: #ef4444;"></i>
+                        <h2>Error al cargar nos.json</h2>
+                        <p style="color: #ef4444; margin-top: 10px;">${escapeHtml(errorMsg)}</p>
+                        <p style="margin-top: 20px; font-size: 0.85rem;">Verifica que el archivo exista y tenga formato válido:<br>
+                        <code style="background: #1a1a1a; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 8px;">
+                        [{"gh": "usuario/repo", "nips": [1,4], "category": "clients"}]
+                        </code></p>
+                    </div>
+                `;
+                clientCountSpan.innerText = 'Error';
+            });
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        loadNosJson();
+        
+        if (nipInput) {
+            nipInput.addEventListener('input', updateFilter);
+            nipInput.placeholder = "ej: 4, 8, 56";
+        }
+        if (resetBtn) {
+            resetBtn.addEventListener('click', resetFilter);
+        }
+    });
+</script>
+</body>
+</html>
