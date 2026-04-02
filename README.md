@@ -50,7 +50,7 @@ nos/
 3. ¡Listo para usar!
 4. [Probar Z-NOS](chat.html) V.HTML - (Proximamente)
 5. [Nostr Track](nos.html) V.HTML
-├── script html demo pero funcional 100%
+ . ├── script html demo pero funcional 100%
 ```html
 <!DOCTYPE html>
 <html lang="es">
