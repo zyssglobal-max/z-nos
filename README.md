@@ -35,7 +35,8 @@ nos/
 ├── 🌐 global    // canal global solo para tus amigos agregados
 ├── 🌐 help      // ayuda simple para los primeros pasos en z-nos
 ├── 🌐 index     // chat privado nuestra principal herramienta
-└── 🌐 repo      // repositorios con las versiones z-nos desde github.com
+├── 🌐 repo      // repositorios con las versiones z-nos desde github.com
+└── 🌐 nos       // Red Nostr Promocional (repos) ...
 ```
 
 ## 📦 Instalación
