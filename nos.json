@@ -1,5 +1,9 @@
 [
   {
+    "gh": "zyssglobal-max/z-nos",
+    "nips": [4],
+    "category": "clients"
+  }, {
     "gh": "damus-io/damus",
     "nips": [1, 4, 8, 10, 12, 19, 21, 25, 42, 56],
     "category": "clients"
