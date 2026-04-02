@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Nostr Clients · nos.json viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>NOs · Nostr</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -11,391 +11,735 @@
             padding: 0;
             box-sizing: border-box;
         }
+        :root {
+            --primary: #66c0f4;
+            --primary-dark: #2d8fc9;
+            --accent: #f59e0b;
+            --bg-base: #07070f;
+            --bg-surface: #0f0f18;
+            --bg-card: rgba(20, 22, 32, 0.92);
+            --border: rgba(255,255,255,0.06);
+            --text: #edf2f8;
+            --text-secondary: #9ca3af;
+            --shadow: 0 20px 35px -12px rgba(0,0,0,0.5);
+        }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-            color: #e0e0e0;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at 20% 30%, #0a0a14, #030308);
+            color: var(--text);
+            line-height: 1.5;
             min-height: 100vh;
         }
-        .header {
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(102, 192, 244, 0.3);
-            padding: 10px 24px;
+        .app-layout {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .sidebar {
+            width: 280px;
+            background: rgba(10, 10, 18, 0.75);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid var(--border);
+            padding: 28px 20px 32px 24px;
             position: sticky;
             top: 0;
-            z-index: 100;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+            z-index: 20;
         }
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .logo {
+        .sidebar-header {
             display: flex;
             align-items: center;
             gap: 12px;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
         }
-        .logo i {
-            font-size: 32px;
-            color: #66c0f4;
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .logo h1 {
-            font-size: 1.5rem;
+        .logo-icon i { font-size: 24px; color: #0a0a0a; }
+        .sidebar-header h2 { font-size: 1.2rem; font-weight: 600; letter-spacing: -0.3px; }
+        .sidebar-header span { font-size: 0.7rem; color: var(--text-secondary); display: block; }
+        .category-section {
+            margin-bottom: 32px;
+        }
+        .category-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .cat-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .cat-item i { width: 24px; color: var(--primary); }
+        .cat-item span:first-child { display: flex; align-items: center; gap: 10px; }
+        .cat-item .count-badge {
+            background: rgba(102,192,244,0.15);
+            padding: 2px 8px;
+            border-radius: 30px;
+            font-size: 0.7rem;
             font-weight: 600;
-            background: linear-gradient(135deg, #66c0f4, #4a9fd4);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
         }
-        .logo span {
-            font-size: 0.8rem;
-            color: #888;
-            margin-left: 8px;
+        .cat-item.active {
+            background: rgba(102,192,244,0.12);
+            border-color: rgba(102,192,244,0.4);
+            color: var(--primary);
         }
-        .stats-bar {
-            max-width: 1200px;
-            margin: 24px auto 0;
-            padding: 0 24px;
+        .cat-item:hover:not(.active) {
+            background: rgba(255,255,255,0.05);
+            border-color: rgba(255,255,255,0.1);
+        }
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 24px 32px 48px 32px;
+        }
+        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 16px;
+            margin-bottom: 28px;
+            background: rgba(7,7,15,0.6);
+            backdrop-filter: blur(8px);
+            padding: 12px 20px;
+            border-radius: 60px;
+            border: 1px solid var(--border);
         }
-        .stats-count {
+        .stats-pills {
             display: flex;
-            align-items: center;
+            gap: 20px;
+        }
+        .stat-pill {
+            display: flex;
+            align-items: baseline;
             gap: 8px;
-            background: rgba(102, 192, 244, 0.1);
-            padding: 8px 16px;
-            border-radius: 20px;
+            font-size: 0.85rem;
         }
-        .stats-count i {
-            color: #66c0f4;
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
         }
-        .filter-controls {
+        .filter-area {
             display: flex;
             gap: 10px;
             align-items: center;
             flex-wrap: wrap;
         }
-        .filter-input {
+        .nip-filter-input {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
             padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            border-radius: 40px;
             color: white;
-            width: 200px;
-            font-size: 0.9rem;
+            font-family: monospace;
+            width: 180px;
         }
-        .filter-input:focus {
-            outline: none;
-            border-color: #66c0f4;
-            background: rgba(255, 255, 255, 0.1);
-        }
-        .filter-btn, .reset-btn {
-            padding: 8px 16px;
-            background: #66c0f4;
+        .btn-sm {
+            padding: 8px 18px;
+            border-radius: 40px;
+            background: var(--primary);
             border: none;
-            border-radius: 8px;
-            color: #0a0a0a;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            transition: 0.2s;
         }
-        .filter-btn:hover, .reset-btn:hover {
-            background: #4a9fd4;
-            transform: translateY(-1px);
+        .btn-outline-sm {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
         }
-        .reset-btn {
-            background: rgba(255, 255, 255, 0.1);
-            color: #e0e0e0;
-        }
-        .reset-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        .sites-grid {
-            max-width: 1200px;
-            margin: 32px auto;
-            padding: 0 24px;
+        .clients-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
             gap: 24px;
+            margin-top: 20px;
         }
-        .site-card {
-            background: rgba(20, 20, 30, 0.8);
-            border-radius: 16px;
+        .client-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(4px);
+            border-radius: 28px;
+            border: 1px solid var(--border);
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.3s;
             text-decoration: none;
             color: inherit;
-            display: block;
+            display: flex;
+            flex-direction: column;
         }
-        .site-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(102, 192, 244, 0.5);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+        .client-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow);
+            border-color: rgba(102,192,244,0.3);
         }
-        .site-preview {
-            height: 140px;
-            background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+        .card-header {
+            padding: 18px 20px 12px 20px;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+        .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 30px;
+            background: #1e1e2c;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
             overflow: hidden;
+            flex-shrink: 0;
         }
-        .preview-placeholder {
-            text-align: center;
-            color: #888;
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        .preview-placeholder i {
-            font-size: 48px;
-            margin-bottom: 10px;
-            opacity: 0.5;
+        .avatar i {
+            font-size: 28px;
+            color: var(--primary);
+            opacity: 0.7;
         }
-        .preview-placeholder span {
-            font-size: 0.8rem;
-            display: block;
-        }
-        .nips-badge {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(102, 192, 244, 0.9);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            color: #0a0a0a;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .info {
-            padding: 16px;
-        }
-        .site-name {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .site-name h3 {
+        .repo-info h3 {
             font-size: 1rem;
-            font-weight: 600;
-            color: #fff;
-            word-break: break-all;
+            font-weight: 700;
+            font-family: monospace;
         }
-        .site-stats {
-            display: flex;
-            gap: 12px;
-            font-size: 0.75rem;
-            color: #888;
+        .repo-info .category-chip {
+            background: rgba(245,158,11,0.12);
+            padding: 3px 10px;
+            border-radius: 30px;
+            font-size: 0.65rem;
+            display: inline-block;
+            margin-top: 6px;
         }
-        .site-stats span {
+        .nips-accordion {
+            padding: 12px 20px 8px;
+            border-bottom: 1px solid var(--border);
+        }
+        .accordion-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 4px;
+            cursor: pointer;
+            padding: 6px 0;
+            font-weight: 500;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
-        .nips-list {
-            margin: 12px 0;
+        .accordion-header i {
+            transition: transform 0.2s;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .accordion-content.open {
+            max-height: 200px;
+            margin-top: 12px;
+        }
+        .nips-flex {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
+            padding-bottom: 8px;
         }
-        .nip-chip {
-            background: rgba(102, 192, 244, 0.15);
-            padding: 4px 10px;
-            border-radius: 20px;
+        .nip-bubble {
+            background: rgba(102,192,244,0.1);
+            padding: 4px 12px;
+            border-radius: 40px;
             font-size: 0.7rem;
-            font-weight: 500;
-            color: #66c0f4;
+            font-weight: 600;
             font-family: monospace;
-            transition: all 0.2s;
+            color: #bbdef5;
         }
-        .nip-chip.highlight {
-            background: #f59e0b;
+        .nip-bubble.highlight {
+            background: var(--accent);
             color: #0a0a0a;
-            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+            font-weight: 700;
+            box-shadow: 0 0 6px rgba(245,158,11,0.6);
         }
-        .site-description {
-            font-size: 0.85rem;
-            color: #aaa;
-            margin: 12px 0;
-            line-height: 1.4;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .site-author {
+        .card-footer {
+            padding: 14px 20px 18px;
             display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            background: rgba(0,0,0,0.2);
+        }
+        .pagination-container {
+            margin-top: 48px;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            color: #888;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            gap: 12px;
+            flex-wrap: wrap;
         }
-        .site-author i {
-            color: #66c0f4;
-        }
-        .category-badge {
+        .pagination-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 44px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            background: rgba(245, 158, 11, 0.15);
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            color: #f59e0b;
+            gap: 8px;
+        }
+        .pagination-btn i { font-size: 0.8rem; }
+        .pagination-btn.active {
+            background: var(--primary);
+            color: #0a0a0a;
+            border-color: var(--primary);
+            font-weight: 700;
+        }
+        .pagination-btn:hover:not(.active):not(:disabled) {
+            background: rgba(102,192,244,0.15);
+            border-color: rgba(102,192,244,0.4);
+            color: white;
+        }
+        .pagination-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .page-numbers {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .page-num {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .page-num.active {
+            background: var(--primary);
+            color: #0a0a0a;
+            border-color: var(--primary);
+        }
+        .page-num:hover:not(.active) {
+            background: rgba(102,192,244,0.1);
         }
         .empty-state {
             text-align: center;
-            padding: 80px 24px;
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 60px 20px;
+            background: rgba(15,15,26,0.6);
+            border-radius: 48px;
         }
-        .empty-state i {
-            font-size: 64px;
-            color: #66c0f4;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
-        .empty-state h2 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-        .empty-state p {
-            color: #888;
-            margin-bottom: 20px;
-        }
-        .loading-spinner, .error-box {
-            text-align: center;
-            padding: 60px 24px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .error-box {
-            background: rgba(239, 68, 68, 0.1);
-            border-radius: 16px;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-        .footer {
-            text-align: center;
-            padding: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            color: #666;
-            font-size: 0.8rem;
-        }
-        @media (max-width: 768px) {
-            .header-content {
+        @media (max-width: 860px) {
+            .app-layout {
                 flex-direction: column;
-                text-align: center;
             }
-            .filter-controls {
+            .sidebar {
                 width: 100%;
-                justify-content: center;
+                height: auto;
+                position: relative;
+                backdrop-filter: blur(20px);
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 16px 20px;
+                overflow-x: auto;
             }
-            .sites-grid {
-                grid-template-columns: 1fr;
-                padding: 0 16px;
+            .category-list {
+                flex-direction: row;
+                flex-wrap: wrap;
             }
-            .stats-bar {
+            .cat-item {
+                flex: 0 0 auto;
+            }
+            .main-content {
+                padding: 20px 16px 32px;
+            }
+            .top-bar {
                 flex-direction: column;
-                text-align: center;
+                align-items: stretch;
+                border-radius: 28px;
+            }
+            .page-num {
+                width: 36px;
+                height: 36px;
             }
         }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px);}
+            to { opacity: 1; transform: translateY(0);}
         }
-        .site-card {
-            animation: fadeInUp 0.4s ease-out forwards;
+        .client-card {
+            animation: fadeUp 0.3s ease;
         }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        body::-webkit-scrollbar {
+            width: 2px;               
         }
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
+        body::-webkit-scrollbar-track {
+            background: rgb(34 31 31 / 96%);       
         }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(102, 192, 244, 0.3);
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 192, 244, 0.5);
+        body::-webkit-scrollbar-thumb {
+            background-color: grey;   
+            border-radius: 20px;       
+            border: 1px solid black; 
         }
     </style>
 </head>
 <body>
-<div class="header">
-    <div class="header-content">
-        <div class="logo">
-            <i class="fas fa-bolt"></i>
-            <h1>Nostr Clients</h1>
-            <span>nos.json</span>
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+            <div>
+                <h2>NOs · Nostr</h2>
+                <span>Hub explorer</span>
+            </div>
         </div>
-        <div class="filter-controls">
-            <input type="text" id="nipFilter" class="filter-input" placeholder="NIPs, ej: 4, 8, 56">
-            <button id="resetFilterBtn" class="reset-btn"><i class="fas fa-times"></i> Reiniciar</button>
+        <div class="category-section">
+            <div class="category-title"><i class="fas fa-tag"></i> FILTRAR POR CATEGORÍA</div>
+            <div id="categoryListContainer" class="category-list">
+                <div class="cat-item"><span><i class="fas fa-spinner fa-pulse"></i> Cargando...</span></div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="stats-bar">
-    <div class="stats-count">
-        <i class="fas fa-layer-group"></i>
-        <span id="clientCount">Cargando...</span>
-    </div>
-    <div class="stats-count" id="filterStats" style="display: none;">
-        <i class="fas fa-filter"></i>
-        <span id="filterBadge">Filtro activo</span>
-    </div>
-</div>
-<div id="clientsContainer" class="sites-grid">
-    <div class="empty-state">
-        <i class="fas fa-spinner fa-pulse"></i>
-        <h2>Cargando nos.json...</h2>
-        <p>Leyendo archivo desde el servidor</p>
-    </div>
-</div>
-<div class="footer">
-    <p>⚡ Basado en <strong>nos.json</strong> · NIPs resaltados en <span style="color:#f59e0b;">naranja</span> coinciden con el filtro</p>
-    <p style="margin-top: 8px;">Clientes que implementan Nostr Implementation Possibilities</p>
+        <div style="margin-top: auto; font-size: 0.7rem; text-align: center; padding-top: 32px; opacity: 0.5;">
+            <i class="fab fa-nostr"></i> NOS • GitHub
+        </div>
+    </aside>
+    <main class="main-content">
+        <div class="top-bar">
+            <div class="stats-pills">
+                <div class="stat-pill"><span class="stat-number" id="totalClientsStat">0</span> <span>@ll</span></div>
+                <div class="stat-pill"><span class="stat-number" id="totalNipsStat">0</span> <span>NIPs únicos</span></div>
+                <div class="stat-pill" id="showingInfo"><span class="stat-number" id="showingCount">0</span> <span>mostrados</span></div>
+            </div>
+            <div class="filter-area">
+                <input type="text" id="nipSearchInput" class="nip-filter-input" placeholder="NIPs: 1,4,9,40" autocomplete="off">
+                <button id="applyNipFilterBtn" class="btn-sm"><i class="fas fa-filter"></i> Filtrar</button>
+                <button id="resetAllFiltersBtn" class="btn-sm btn-outline-sm"><i class="fas fa-times"></i> Reiniciar</button>
+            </div>
+        </div>
+        <div id="clientsGridContainer" class="clients-grid">
+            <div class="empty-state"><i class="fas fa-spinner fa-pulse"></i> Cargando clients...</div>
+        </div>
+        <div id="paginationWrapper" class="pagination-container" style="display: none;"></div>
+    </main>
 </div>
 <script>
-    let clientsData = [];
-    let currentFilterSet = null;
-    const container = document.getElementById('clientsContainer');
-    const clientCountSpan = document.getElementById('clientCount');
-    const filterStatsDiv = document.getElementById('filterStats');
-    const filterBadgeSpan = document.getElementById('filterBadge');
-    const nipInput = document.getElementById('nipFilter');
-    const resetBtn = document.getElementById('resetFilterBtn');
+    let originalClients = [];     
+    let currentCategoryFilter = "all";    
+    let currentNipFilterSet = null;       
+    let currentPage = 1;
+    const itemsPerPage = 21; 
+    let currentFilteredList = [];
+    const gridContainer = document.getElementById('clientsGridContainer');
+    const categoryContainer = document.getElementById('categoryListContainer');
+    const totalClientsSpan = document.getElementById('totalClientsStat');
+    const totalNipsSpan = document.getElementById('totalNipsStat');
+    const showingCountSpan = document.getElementById('showingCount');
+    const nipInput = document.getElementById('nipSearchInput');
+    const applyNipBtn = document.getElementById('applyNipFilterBtn');
+    const resetAllBtn = document.getElementById('resetAllFiltersBtn');
+    const paginationWrapper = document.getElementById('paginationWrapper');
+    function getGitHubAvatarFromRepo(ghPath) {
+        if (!ghPath || typeof ghPath !== 'string') return null;
+        const parts = ghPath.split('/').filter(p => p.trim() !== '');
+        if (parts.length >= 1) {
+            const owner = parts[0];
+            return `https://avatars.githubusercontent.com/${owner}?s=80&v=4`;
+        }
+        return null;
+    }
+    function computeUniqueNipsCount(data) {
+        const all = new Set();
+        data.forEach(c => {
+            if (Array.isArray(c.nips)) c.nips.forEach(n => all.add(n));
+        });
+        return all.size;
+    }
+    function getCategoriesCount(data) {
+        const map = new Map();
+        map.set('all', data.length);
+        data.forEach(client => {
+            const cat = client.category || 'general';
+            map.set(cat, (map.get(cat) || 0) + 1);
+        });
+        return map;
+    }
+    function renderSidebarCategories(data) {
+        const catCounts = getCategoriesCount(data);
+        const categories = Array.from(catCounts.keys()).filter(k => k !== 'all');
+        categories.sort();
+        let html = `<div class="cat-item ${currentCategoryFilter === 'all' ? 'active' : ''}" data-category="all">
+                        <span><i class="fas fa-globe"></i> Todos</span>
+                        <span class="count-badge">${catCounts.get('all') || 0}</span>
+                    </div>`;
+        for (let cat of categories) {
+            const count = catCounts.get(cat) || 0;
+            const activeClass = currentCategoryFilter === cat ? 'active' : '';
+            html += `<div class="cat-item ${activeClass}" data-category="${escapeHtml(cat)}">
+                        <span><i class="fas fa-folder"></i> ${escapeHtml(cat)}</span>
+                        <span class="count-badge">${count}</span>
+                    </div>`;
+        }
+        categoryContainer.innerHTML = html;
+        document.querySelectorAll('.cat-item').forEach(el => {
+            el.addEventListener('click', (e) => {
+                const category = el.getAttribute('data-category');
+                if (category) {
+                    currentCategoryFilter = category;
+                    currentPage = 1;  
+                    renderSidebarCategories(originalClients);
+                    applyFiltersAndRender();
+                }
+            });
+        });
+    }
+    function getFilteredClients() {
+        let filtered = [...originalClients];
+        if (currentCategoryFilter !== 'all') {
+            filtered = filtered.filter(client => (client.category || 'general') === currentCategoryFilter);
+        }
+        if (currentNipFilterSet && currentNipFilterSet.size > 0) {
+            filtered = filtered.filter(client => {
+                if (!client.nips || !Array.isArray(client.nips)) return false;
+                return client.nips.some(nip => currentNipFilterSet.has(nip));
+            });
+        }
+        return filtered;
+    }
+    function renderCardsForPage() {
+        if (!currentFilteredList.length) {
+            gridContainer.innerHTML = `<div class="empty-state"><i class="fas fa-search"></i> <h3>Sin resultados</h3><p>Prueba con otro filtro o categoría</p><button id="emptyReset" class="btn-sm" style="margin-top:12px">Limpiar filtros</button></div>`;
+            const resetEmpty = document.getElementById('emptyReset');
+            if (resetEmpty) resetEmpty.addEventListener('click', () => { resetAllFilters(); });
+            paginationWrapper.style.display = 'none';
+            showingCountSpan.innerText = '0';
+            return;
+        }
+        const totalItems = currentFilteredList.length;
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        if (currentPage > totalPages) currentPage = totalPages > 0 ? totalPages : 1;
+        const startIdx = (currentPage - 1) * itemsPerPage;
+        const endIdx = startIdx + itemsPerPage;
+        const pageItems = currentFilteredList.slice(startIdx, endIdx);
+        showingCountSpan.innerText = `${pageItems.length} / ${totalItems}`;
+        let cardsHtml = '';
+        for (const client of pageItems) {
+            const ghPath = client.gh || '';
+            const repoUrl = ghPath ? `https://github.com/${ghPath}` : '#';
+            const shortName = ghPath ? ghPath.split('/').pop() : 'repo';
+            const category = client.category || 'general';
+            const nipsArray = client.nips || [];
+            const sortedNips = [...nipsArray].sort((a,b)=>a-b);
+            const avatarUrl = getGitHubAvatarFromRepo(ghPath);
+            const hasValidAvatar = avatarUrl && !avatarUrl.includes('undefined');
+            const cardId = `card_${Math.random().toString(36).substr(2, 8)}`;
+            cardsHtml += `
+                <div class="client-card" data-card-id="${cardId}">
+                    <div class="card-header">
+                        <div class="avatar">
+                            ${hasValidAvatar ? `<img src="${avatarUrl}" alt="avatar" loading="lazy" onerror="this.onerror=null;this.parentElement.innerHTML='<i class=\\'fab fa-github\\'></i>';">` : `<i class="fab fa-github"></i>`}
+                        </div>
+                        <div class="repo-info">
+                            <h3>${escapeHtml(shortName)}</h3>
+                            <div class="category-chip"><i class="fas fa-tag"></i> ${escapeHtml(category)}</div>
+                        </div>
+                    </div>
+                    <div class="nips-accordion">
+                        <div class="accordion-header" data-accordion-trigger="${cardId}">
+                            <span><i class="fas fa-microchip"></i> NIPs implementados (${sortedNips.length})</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="accordion-content" id="accordion-${cardId}">
+                            <div class="nips-flex">
+                                ${sortedNips.length === 0 ? '<span style="color:#6b7280;">No especificados</span>' : 
+                                    sortedNips.map(nip => {
+                                        const isHighlighted = currentNipFilterSet && currentNipFilterSet.has(nip);
+                                        return `<span class="nip-bubble ${isHighlighted ? 'highlight' : ''}">NIP-${nip}</span>`;
+                                    }).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span><i class="fab fa-github"></i> ${escapeHtml(ghPath || 'standalone')}</span>
+                        <a href="${repoUrl}" target="_blank" style="color:var(--primary); text-decoration:none;" onclick="event.stopPropagation()">Ver repositorio <i class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+            `;
+        }
+        gridContainer.innerHTML = cardsHtml;
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            const triggerAttr = header.getAttribute('data-accordion-trigger');
+            if (triggerAttr) {
+                const contentDiv = document.getElementById(`accordion-${triggerAttr}`);
+                if (contentDiv) {
+                    header.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const isOpen = contentDiv.classList.contains('open');
+                        contentDiv.classList.toggle('open');
+                        const icon = header.querySelector('i:last-child');
+                        if (icon) icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+                    });
+                    const icon = header.querySelector('i:last-child');
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                }
+            }
+        });
+        renderPaginationControls(totalPages);
+    }
+    function renderPaginationControls(totalPages) {
+        if (totalPages <= 1) {
+            paginationWrapper.style.display = 'none';
+            return;
+        }
+        paginationWrapper.style.display = 'flex';
+        let paginationHtml = `
+            <button class="pagination-btn" id="prevPageBtn" ${currentPage === 1 ? 'disabled' : ''}>
+                <i class="fas fa-chevron-left"></i> Anterior
+            </button>
+            <div class="page-numbers" id="pageNumbersContainer"></div>
+            <button class="pagination-btn" id="nextPageBtn" ${currentPage === totalPages ? 'disabled' : ''}>
+                Siguiente <i class="fas fa-chevron-right"></i>
+            </button>
+        `;
+        paginationWrapper.innerHTML = paginationHtml;
+        const pageNumbersContainer = document.getElementById('pageNumbersContainer');
+        let maxVisible = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+        if (endPage - startPage + 1 < maxVisible) startPage = Math.max(1, endPage - maxVisible + 1);
+        for (let i = startPage; i <= endPage; i++) {
+            const activeClass = i === currentPage ? 'active' : '';
+            pageNumbersContainer.innerHTML += `<div class="page-num ${activeClass}" data-page="${i}">${i}</div>`;
+        }
+        document.getElementById('prevPageBtn')?.addEventListener('click', () => {
+            if (currentPage > 1) { currentPage--; renderCardsForPage(); window.scrollTo({ top: document.querySelector('.main-content').offsetTop - 20, behavior: 'smooth' }); }
+        });
+        document.getElementById('nextPageBtn')?.addEventListener('click', () => {
+            if (currentPage < totalPages) { currentPage++; renderCardsForPage(); window.scrollTo({ top: document.querySelector('.main-content').offsetTop - 20, behavior: 'smooth' }); }
+        });
+        document.querySelectorAll('.page-num').forEach(el => {
+            el.addEventListener('click', () => {
+                const page = parseInt(el.getAttribute('data-page'));
+                if (!isNaN(page) && page !== currentPage) {
+                    currentPage = page;
+                    renderCardsForPage();
+                    window.scrollTo({ top: document.querySelector('.main-content').offsetTop - 20, behavior: 'smooth' });
+                }
+            });
+        });
+    }
+    function applyFiltersAndRender() {
+        if (!originalClients.length) return;
+        currentFilteredList = getFilteredClients();
+        currentPage = 1;  
+        totalClientsSpan.innerText = originalClients.length;
+        const uniqueNipsTotal = computeUniqueNipsCount(originalClients);
+        totalNipsSpan.innerText = uniqueNipsTotal;
+        renderCardsForPage();
+        renderSidebarCategories(originalClients);
+    }
+    function resetAllFilters() {
+        currentCategoryFilter = 'all';
+        currentNipFilterSet = null;
+        currentPage = 1;
+        if (nipInput) nipInput.value = '';
+        applyFiltersAndRender();
+    }
+    function applyNipFilter() {
+        const raw = nipInput.value.trim();
+        if (raw === "") {
+            currentNipFilterSet = null;
+            applyFiltersAndRender();
+            return;
+        }
+        const parts = raw.split(/[ ,]+/).filter(p => p.trim() !== "");
+        const nipNumbers = [];
+        for (let part of parts) {
+            const num = parseInt(part, 10);
+            if (!isNaN(num) && num >= 1 && num <= 999) nipNumbers.push(num);
+        }
+        if (nipNumbers.length === 0) {
+            currentNipFilterSet = null;
+        } else {
+            currentNipFilterSet = new Set(nipNumbers);
+        }
+        applyFiltersAndRender();
+    }
+    function loadNosJson() {
+        gridContainer.innerHTML = `<div class="empty-state"><i class="fas fa-spinner fa-pulse"></i> Cargando base de datos nostr...</div>`;
+        fetch('./nos.json')
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                if (!Array.isArray(data)) throw new Error("Formato inválido");
+                originalClients = data.map(item => ({
+                    ...item,
+                    nips: Array.isArray(item.nips) ? item.nips : [],
+                    category: item.category || 'general',
+                    gh: item.gh || item.repository || ''
+                }));
+                if (originalClients.length === 0) {
+                    gridContainer.innerHTML = `<div class="empty-state"><i class="fas fa-database"></i> nos.json vacío</div>`;
+                    totalClientsSpan.innerText = '0';
+                    totalNipsSpan.innerText = '0';
+                    paginationWrapper.style.display = 'none';
+                    return;
+                }
+                currentCategoryFilter = 'all';
+                currentNipFilterSet = null;
+                currentPage = 1;
+                renderSidebarCategories(originalClients);
+                applyFiltersAndRender();
+            })
+            .catch(err => {
+                console.error(err);
+                gridContainer.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i> Error: ${err.message}<br><small>Verifica que ./nos.json exista y tenga estructura válida.</small><br><pre style="margin-top:12px;">[{"gh":"user/repo","nips":[1,4],"category":"mobile"}]</pre></div>`;
+                totalClientsSpan.innerText = '0';
+                totalNipsSpan.innerText = '0';
+                paginationWrapper.style.display = 'none';
+            });
+    }
     function escapeHtml(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
@@ -405,215 +749,11 @@
             return m;
         });
     }
-    function buildRepoUrl(ghPath) {
-        if (!ghPath || typeof ghPath !== 'string') return '#';
-        const clean = ghPath.trim();
-        if (!clean.includes('/')) return '#';
-        return `https://github.com/${clean}`;
-    }
-    function formatRepoName(ghPath) {
-        if (!ghPath) return 'unknown/repo';
-        return ghPath;
-    }
-    function getShortName(ghPath) {
-        if (!ghPath) return 'Repositorio';
-        const parts = ghPath.split('/');
-        return parts[parts.length - 1];
-    }
-    function renderCards() {
-        if (!clientsData.length) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-folder-open"></i>
-                    <h2>No hay clientes cargados</h2>
-                    <p>El archivo nos.json está vacío o no contiene datos válidos</p>
-                </div>
-            `;
-            clientCountSpan.innerText = '0 clientes';
-            return;
-        }
-        let filtered = [...clientsData];
-        const isFilterActive = currentFilterSet && currentFilterSet.size > 0;
-        if (isFilterActive) {
-            filtered = clientsData.filter(client => {
-                if (!client.nips || !Array.isArray(client.nips)) return false;
-                return client.nips.some(nip => currentFilterSet.has(nip));
-            });
-        }
-        const total = clientsData.length;
-        const showing = filtered.length;
-        clientCountSpan.innerText = `${total} cliente${total !== 1 ? 's' : ''}`;
-        if (isFilterActive) {
-            const filterList = Array.from(currentFilterSet).sort((a,b)=>a-b).join(', ');
-            filterBadgeSpan.innerText = `NIP en {${filterList}} · ${showing} resultados`;
-            filterStatsDiv.style.display = 'flex';
-        } else {
-            filterStatsDiv.style.display = 'none';
-        }
-        if (filtered.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-search"></i>
-                    <h2>No hay coincidencias</h2>
-                    <p>Ningún cliente soporta los NIP(s) seleccionados</p>
-                    <button class="reset-btn" onclick="document.getElementById('resetFilterBtn').click()" style="margin-top: 16px;">
-                        <i class="fas fa-times"></i> Limpiar filtro
-                    </button>
-                </div>
-            `;
-            return;
-        }
-        let cardsHtml = '';
-        for (const client of filtered) {
-            const ghPath = client.gh || '';
-            const repoUrl = buildRepoUrl(ghPath);
-            const fullName = formatRepoName(ghPath);
-            const shortName = getShortName(ghPath);
-            const category = client.category || 'clients';
-            const nipsArray = client.nips || [];
-            const sortedNips = [...nipsArray].sort((a,b) => a - b);
-            const nipCount = sortedNips.length;
-            let nipsHtml = '';
-            if (sortedNips.length === 0) {
-                nipsHtml = '<div style="font-size:0.7rem; color:#666;">Sin NIPs especificados</div>';
-            } else {
-                const chips = sortedNips.map(nip => {
-                    const isHighlighted = isFilterActive ? currentFilterSet.has(nip) : false;
-                    const highlightClass = isHighlighted ? 'highlight' : '';
-                    return `<span class="nip-chip ${highlightClass}">NIP-${nip}</span>`;
-                }).join('');
-                nipsHtml = `<div class="nips-list">${chips}</div>`;
-            }
-            const description = `Cliente Nostr con ${nipCount} NIP${nipCount !== 1 ? 's' : ''} implementados`;
-            cardsHtml += `
-                <a href="${repoUrl}" target="_blank" rel="noopener noreferrer" class="site-card">
-                    <div class="site-preview">
-                        <div class="preview-placeholder">
-                            <i class="fas fa-code-branch"></i>
-                            <span>${escapeHtml(shortName)}</span>
-                        </div>
-                        <div class="nips-badge">
-                            <i class="fas fa-microchip"></i>
-                            ${nipCount} NIP${nipCount !== 1 ? 's' : ''}
-                        </div>
-                    </div>
-                    <div class="info">
-                        <div class="site-name">
-                            <h3>${escapeHtml(shortName)}</h3>
-                            <div class="site-stats">
-                                <span><i class="fab fa-github"></i> GitHub</span>
-                            </div>
-                        </div>
-                        ${nipsHtml}
-                        <div class="site-description">
-                            ${escapeHtml(description)}
-                        </div>
-                        <div class="site-author">
-                            <i class="fas fa-tag"></i>
-                            <span>${escapeHtml(category)}</span>
-                            <span style="margin-left: auto; font-size: 0.7rem;">
-                                <i class="fas fa-code"></i> ${escapeHtml(fullName)}
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            `;
-        }
-        container.innerHTML = cardsHtml;
-    }
-    function updateFilter() {
-        const rawValue = nipInput.value.trim();
-        if (rawValue === "") {
-            currentFilterSet = null;
-            renderCards();
-            return;
-        }
-        const parts = rawValue.split(',').map(p => p.trim()).filter(p => p !== "");
-        const nipNumbers = [];
-        for (const part of parts) {
-            const num = parseInt(part, 10);
-            if (!isNaN(num) && isFinite(num)) {
-                nipNumbers.push(num);
-            }
-        }
-        if (nipNumbers.length === 0) {
-            currentFilterSet = null;
-            renderCards();
-            return;
-        }
-        currentFilterSet = new Set(nipNumbers);
-        renderCards();
-    }
-    function resetFilter() {
-        nipInput.value = '';
-        currentFilterSet = null;
-        renderCards();
-        nipInput.focus();
-    }
-    function loadNosJson() {
-        container.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-spinner fa-pulse"></i>
-                <h2>Cargando nos.json...</h2>
-                <p>Leyendo archivo desde el servidor</p>
-            </div>
-        `;
-        clientCountSpan.innerText = 'Cargando...';
-        fetch('./nos.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (!Array.isArray(data)) {
-                    throw new Error('El archivo nos.json no contiene un array válido');
-                }
-                clientsData = data;
-                if (clientsData.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-folder-open"></i>
-                            <h2>Archivo vacío</h2>
-                            <p>nos.json contiene un array sin elementos</p>
-                        </div>
-                    `;
-                    clientCountSpan.innerText = '0 clientes';
-                } else {
-                    renderCards();
-                }
-            })
-            .catch(error => {
-                console.error('Error cargando nos.json:', error);
-                let errorMsg = `No se pudo cargar nos.json: ${error.message}`;
-                if (error.message.includes('404')) {
-                    errorMsg = `Archivo "nos.json" no encontrado. Asegúrate de que existe en la misma carpeta que este HTML.`;
-                }
-                container.innerHTML = `
-                    <div class="error-box">
-                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 20px; color: #ef4444;"></i>
-                        <h2>Error al cargar nos.json</h2>
-                        <p style="color: #ef4444; margin-top: 10px;">${escapeHtml(errorMsg)}</p>
-                        <p style="margin-top: 20px; font-size: 0.85rem;">Verifica que el archivo exista y tenga formato válido:<br>
-                        <code style="background: #1a1a1a; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 8px;">
-                        [{"gh": "usuario/repo", "nips": [1,4], "category": "clients"}]
-                        </code></p>
-                    </div>
-                `;
-                clientCountSpan.innerText = 'Error';
-            });
-    }
     document.addEventListener('DOMContentLoaded', () => {
         loadNosJson();
-        
-        if (nipInput) {
-            nipInput.addEventListener('input', updateFilter);
-            nipInput.placeholder = "ej: 4, 8, 56";
-        }
-        if (resetBtn) {
-            resetBtn.addEventListener('click', resetFilter);
-        }
+        if (applyNipBtn) applyNipBtn.addEventListener('click', applyNipFilter);
+        if (resetAllBtn) resetAllBtn.addEventListener('click', resetAllFilters);
+        if (nipInput) nipInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') applyNipFilter(); });
     });
 </script>
 </body>
