@@ -43,12 +43,12 @@ nos/
 ```
 <img src="assets/img/feed.png" alt="z-nos" width="100%"/>
 ```
-├── 🌐 global    // canal global solo para tus amigos agregados
+├── 🌐 global
 ```
 <img src="assets/img/global.png" alt="z-nos" width="100%"/>
-`
+```
 ├── `Nos promo`
-`
+```
 <img src="assets/img/promo.png" alt="z-nos" width="100%"/>
 
 ## 📦 Instalación
