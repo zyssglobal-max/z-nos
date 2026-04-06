@@ -25,7 +25,7 @@
 
 ## 🧮 Vista previa
 
-<img src="z-nos.png" alt="z-nos" width="100%"/>
+<img src="assets/img/z-nos.png" alt="z-nos" width="100%"/>
 
 ## 📁 Estructura
 
@@ -39,9 +39,9 @@ nos/
 └── 🌐 nos       // Red Nostr Promocional (repos) ...
 ```
 ├── 🌐 feed      // feed social activo con (Perfil, Trending, likes)
-<img src="feed.png" alt="z-nos" width="100%"/>
+<img src="assets/img/feed.png" alt="z-nos" width="100%"/>
 ├── `Nos promo`
-<img src="promo.png" alt="z-nos" width="100%"/>
+<img src="assets/img/promo.png" alt="z-nos" width="100%"/>
 
 ## 📦 Instalación
 
