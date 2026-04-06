@@ -39,13 +39,13 @@ nos/
 └── 🌐 nos       // Red Nostr Promocional (repos) ...
 ```
 
-├── 🌐 feed
+├── 🌐 `feed`
 <img src="assets/img/feed.png" alt="z-nos" width="100%"/>
 
-├── 🌐 global
+├── 🌐 `global`
 <img src="assets/img/global.png" alt="z-nos" width="100%"/>
 
-├── Nos promo
+├── 🌐 `Nos promo`
 <img src="assets/img/promo.png" alt="z-nos" width="100%"/>
 
 ## 📦 Instalación
