@@ -38,6 +38,8 @@ nos/
 ├── 🌐 repo      // repositorios con las versiones z-nos desde github.com
 └── 🌐 nos       // Red Nostr Promocional (repos) ...
 ```
+├── 🌐 feed      // feed social activo con (Perfil, Trending, likes)
+<img src="feed.png" alt="z-nos" width="100%"/>
 ├── `Nos promo`
 <img src="promo.png" alt="z-nos" width="100%"/>
 
