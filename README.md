@@ -38,17 +38,14 @@ nos/
 ├── 🌐 repo      // repositorios con las versiones z-nos desde github.com
 └── 🌐 nos       // Red Nostr Promocional (repos) ...
 ```
-```
+
 ├── 🌐 feed
-```
 <img src="assets/img/feed.png" alt="z-nos" width="100%"/>
-```
+
 ├── 🌐 global
-```
 <img src="assets/img/global.png" alt="z-nos" width="100%"/>
-```
+
 ├── Nos promo
-```
 <img src="assets/img/promo.png" alt="z-nos" width="100%"/>
 
 ## 📦 Instalación
