@@ -47,7 +47,7 @@ nos/
 ```
 <img src="assets/img/global.png" alt="z-nos" width="100%"/>
 ```
-├── `Nos promo`
+├── Nos promo
 ```
 <img src="assets/img/promo.png" alt="z-nos" width="100%"/>
 
