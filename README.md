@@ -46,6 +46,12 @@ nos/
 ├── 🌐 `global`
 <img src="assets/img/global.png" alt="z-nos" width="100%"/>
 
+├── 🌐 `help`
+<img src="assets/img/help.png" alt="z-nos" width="100%"/>
+
+├── 🌐 `index / chat`
+<img src="assets/img/z-nos.png" alt="z-nos" width="100%"/>
+
 ├── 🌐 `Nos promo`
 <img src="assets/img/promo.png" alt="z-nos" width="100%"/>
 
