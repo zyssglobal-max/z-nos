@@ -36,6 +36,7 @@ nos/
 ├── 🌐 help      // ayuda simple para los primeros pasos en z-nos
 ├── 🌐 index     // chat privado nuestra principal herramienta
 ├── 🌐 repo      // repositorios con las versiones z-nos desde github.com
+├── 🌐 feedback  // proximamente! ...
 └── 🌐 nos       // Red Nostr Promocional (repos) ...
 ```
 
