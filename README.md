@@ -64,7 +64,7 @@ nos/
 ## 📦 Instalación
 
 ### Opción 1: Uso Directo (EXE)
-1. Descarga los ficheros de la versión mas actual D' `Z-NOS`
+1. Descarga los ficheros de la versión mas actual D' `Z-NOS` [1.9.0.0](chat.html)
 2. Password del .rar 8905
 3. Ábrelo en tu sistema windows (portable) ...
 4. ¡Listo para usar!
