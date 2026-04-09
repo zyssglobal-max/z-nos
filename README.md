@@ -71,4 +71,4 @@ nos/
    - [Probar Z-NOS](chat.html) V.HTML - (READY)
    - [Nostr Track](nos.html) V.HTML
 
-![Ícono](https://img.shields.io/badge/🔴-Z-NOS)
+![Ícono](https://img.shields.io/badge/🔴-Z)-NOS
