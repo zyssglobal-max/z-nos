@@ -64,7 +64,7 @@ nos/
 ## 📦 Instalación
 
 ### Opción 1: Uso Directo (EXE)
-1. Descarga los ficheros de la versión mas actual D' `Z-NOS` - v[1.9.0.0](https://github.com/zyssglobal-max/z-nos/tree/main/v.pc/1.9.0.0)
+1. Descarga los ficheros de la versión mas actual D' `Z-NOS` [v1.9.0.0](https://github.com/zyssglobal-max/z-nos/tree/main/v.pc/1.9.0.0)
 2. Password del .rar 8905
 3. Ábrelo en tu sistema windows (portable) ...
 4. ¡Listo para usar!
