@@ -72,6 +72,7 @@ nos/
    - [Probar Z-NOS](chat-reponsive.html) V.HTML - (READY) reponsive ...
    - [Nostr Track](nos.html) V.HTML
 
+---
 > ZYSS .CORP / somos una sola persona `para curiosos` ...
 ---
 > ZYSS .CORP / `npub1qyxgmwnezazde84lqjz3l6k38f5pglax7ltyhq4kzd3p8s3j53pql2nuek`
