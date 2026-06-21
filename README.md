@@ -73,8 +73,7 @@ nos/
    - [Nostr Track](nos.html) V.HTML
 
 ---
-> ZYSS .CORP / somos una sola persona `para curiosos` ... <br>
+> ZYSS .CORP / somos una sola persona `para curiosos` ...
 ---
 > ZYSS .CORP / `npub1qyxgmwnezazde84lqjz3l6k38f5pglax7ltyhq4kzd3p8s3j53pql2nuek` <br>
----
 > DJ3SS3 / `npub12mgs0m64r023c6xc92k6t57t94lvwp4zd5vl6yfrq2r03eysapmsft7sys`
