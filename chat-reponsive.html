@@ -877,6 +877,7 @@
             .mobile-menu-btn-right {
                 display: flex;
             }
+
             .navbar-master {
                 height: 56px;
                 padding: 0 10px;
@@ -973,6 +974,7 @@
             .sidebar-right.open {
                 right: 0;
             }
+            /* ===== FIX: ÁREA DE TEXTO VISIBLE EN MÓVIL ===== */
             .feed-main {
                 padding: 8px 10px;
                 height: 100%;
@@ -981,6 +983,7 @@
                 flex-direction: column;
                 grid-column: 1;
                 grid-row: 1;
+                min-height: 0;
             }
             .hdr h3 {
                 font-size: 0.85rem;
@@ -994,11 +997,12 @@
                 padding: 2px 6px;
             }
             .messages-container {
-                flex: 1;
+                flex: 1 1 auto;
                 min-height: 0;
                 height: auto;
                 margin: 4px 0 6px;
                 padding: 8px 6px;
+                overflow-y: auto;
             }
             .message {
                 gap: 6px;
@@ -1039,6 +1043,8 @@
                 padding: 4px 0 6px;
                 flex-shrink: 0;
                 gap: 6px;
+                display: flex;
+                width: 100%;
             }
             .chat-input {
                 padding: 8px 14px;
@@ -1503,6 +1509,7 @@
             <div id="mobileSidebarRightContent"></div>
         </div>
     </div>
+
     <nav class="navbar-master">
         <a class="navbar-brand" href="index.html">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1881,6 +1888,7 @@
             const sidebar = document.getElementById('sidebarLeft');
             const mobileSidebar = document.getElementById('sidebarLeftMobile');
             const isOpen = sidebar.classList.contains('open');
+            
             if (isOpen) {
                 sidebar.classList.remove('open');
                 mobileSidebar.classList.remove('active');
@@ -1896,6 +1904,7 @@
             const sidebar = document.getElementById('sidebarRight');
             const mobileSidebar = document.getElementById('sidebarRightMobile');
             const isOpen = sidebar.classList.contains('open');
+            
             if (isOpen) {
                 sidebar.classList.remove('open');
                 mobileSidebar.classList.remove('active');
@@ -1915,10 +1924,12 @@
                 const rightSidebar = document.getElementById('sidebarRight');
                 const leftMobile = document.getElementById('sidebarLeftMobile');
                 const rightMobile = document.getElementById('sidebarRightMobile');
+                
                 const isLeftBtn = leftBtn.contains(e.target);
                 const isRightBtn = rightBtn.contains(e.target);
                 const isLeftSidebar = leftSidebar.contains(e.target) || leftMobile.contains(e.target);
                 const isRightSidebar = rightSidebar.contains(e.target) || rightMobile.contains(e.target);
+                
                 if (!isLeftBtn && !isRightBtn && !isLeftSidebar && !isRightSidebar) {
                     if (leftSidebar.classList.contains('open')) {
                         leftSidebar.classList.remove('open');
