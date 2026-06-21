@@ -877,7 +877,6 @@
             .mobile-menu-btn-right {
                 display: flex;
             }
-
             .navbar-master {
                 height: 56px;
                 padding: 0 10px;
@@ -1504,7 +1503,6 @@
             <div id="mobileSidebarRightContent"></div>
         </div>
     </div>
-
     <nav class="navbar-master">
         <a class="navbar-brand" href="index.html">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1882,41 +1880,54 @@
         function toggleLeftSidebar() {
             const sidebar = document.getElementById('sidebarLeft');
             const mobileSidebar = document.getElementById('sidebarLeftMobile');
-            sidebar.classList.toggle('open');
-            if (sidebar.classList.contains('open')) {
+            const isOpen = sidebar.classList.contains('open');
+            if (isOpen) {
+                sidebar.classList.remove('open');
+                mobileSidebar.classList.remove('active');
+            } else {
+                sidebar.classList.add('open');
                 document.getElementById('mobileSidebarLeftContent').innerHTML = sidebar.innerHTML;
                 mobileSidebar.classList.add('active');
-            } else {
-                mobileSidebar.classList.remove('active');
+                document.getElementById('sidebarRight').classList.remove('open');
+                document.getElementById('sidebarRightMobile').classList.remove('active');
             }
-            document.getElementById('sidebarRight').classList.remove('open');
-            document.getElementById('sidebarRightMobile').classList.remove('active');
         }
         function toggleRightSidebar() {
             const sidebar = document.getElementById('sidebarRight');
             const mobileSidebar = document.getElementById('sidebarRightMobile');
-            sidebar.classList.toggle('open');
-            if (sidebar.classList.contains('open')) {
+            const isOpen = sidebar.classList.contains('open');
+            if (isOpen) {
+                sidebar.classList.remove('open');
+                mobileSidebar.classList.remove('active');
+            } else {
+                sidebar.classList.add('open');
                 document.getElementById('mobileSidebarRightContent').innerHTML = sidebar.innerHTML;
                 mobileSidebar.classList.add('active');
-            } else {
-                mobileSidebar.classList.remove('active');
+                document.getElementById('sidebarLeft').classList.remove('open');
+                document.getElementById('sidebarLeftMobile').classList.remove('active');
             }
-            document.getElementById('sidebarLeft').classList.remove('open');
-            document.getElementById('sidebarLeftMobile').classList.remove('active');
         }
         document.addEventListener('click', function(e) {
             if (window.innerWidth <= 767) {
                 const leftBtn = document.getElementById('mobileLeftBtn');
                 const rightBtn = document.getElementById('mobileRightBtn');
-                const leftSidebar = document.getElementById('sidebarLeftMobile');
-                const rightSidebar = document.getElementById('sidebarRightMobile');
-                
-                if (!leftBtn.contains(e.target) && leftSidebar.classList.contains('active')) {
-                    toggleLeftSidebar();
-                }
-                if (!rightBtn.contains(e.target) && rightSidebar.classList.contains('active')) {
-                    toggleRightSidebar();
+                const leftSidebar = document.getElementById('sidebarLeft');
+                const rightSidebar = document.getElementById('sidebarRight');
+                const leftMobile = document.getElementById('sidebarLeftMobile');
+                const rightMobile = document.getElementById('sidebarRightMobile');
+                const isLeftBtn = leftBtn.contains(e.target);
+                const isRightBtn = rightBtn.contains(e.target);
+                const isLeftSidebar = leftSidebar.contains(e.target) || leftMobile.contains(e.target);
+                const isRightSidebar = rightSidebar.contains(e.target) || rightMobile.contains(e.target);
+                if (!isLeftBtn && !isRightBtn && !isLeftSidebar && !isRightSidebar) {
+                    if (leftSidebar.classList.contains('open')) {
+                        leftSidebar.classList.remove('open');
+                        leftMobile.classList.remove('active');
+                    }
+                    if (rightSidebar.classList.contains('open')) {
+                        rightSidebar.classList.remove('open');
+                        rightMobile.classList.remove('active');
+                    }
                 }
             }
         });
