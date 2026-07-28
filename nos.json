@@ -1,5 +1,9 @@
 [
   {
+    "gh": "zyssglobal-max/ntree",
+    "nips": [4],
+    "category": "clients"
+  }, {
     "gh": "zyssglobal-max/z-nos",
     "nips": [4],
     "category": "clients"
